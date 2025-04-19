@@ -1,6 +1,6 @@
-# React SPA Go Postgres Simple App
+# React SPA Go Postgres アプリケーション
 
-Firebase認証を使用したReact SPA のシンプルなウェブアプリケーション
+Firebase認証を使用したReact SPAとGoバックエンドのウェブアプリケーション
 
 ## 目次
 
@@ -21,7 +21,7 @@ Firebase認証を使用したReact SPA のシンプルなウェブアプリケ�
 
 ## 概要
 
-このアプリケーションは、ユーザーがFirebase認証でログインし、YouTubeビデオを検索して、選択したビデオの内容をVertex AI Geminiを使用して要約する機能を提供します。バックエンドはFlaskで実装され、フロントエンドはVanilla JSとBootstrapで構築されています。
+このアプリケーションは、ユーザーがFirebase認証でログインし、プロフィール情報を管理できるシンプルなウェブアプリケーションです。バックエンドはGoで実装され、フロントエンドはReact（Vite）とBootstrapで構築されています。データベースにはPostgreSQLを使用しています。
 
 ## 主な機能
 
@@ -34,33 +34,41 @@ Firebase認証を使用したReact SPA のシンプルなウェブアプリケ�
 
 ### フロントエンド
 
-- **HTML/CSS/JavaScript**: 基本的なWeb技術
-- **Bootstrap 5**: UIコンポーネントとレスポンシブデザイン
+- **React**: UIライブラリ
 - **Vite**: モジュールバンドラー・開発サーバー
+- **Bootstrap 5**: UIコンポーネントとレスポンシブデザイン
 - **Firebase SDK**: 認証とIDトークン管理
 - **SCSS**: スタイリングの拡張機能
 
 ### バックエンド
 
-- **Python 3.7+**: サーバーサイド言語
-- **Flask**: Webフレームワーク
-- **Blueprint**: モジュール化されたルーティング
+- **Go**: サーバーサイド言語
+- **PostgreSQL**: データベース
 - **Firebase Admin SDK**: IDトークン検証
 
 ### クラウドサービス
 
 - **Firebase Authentication**: ユーザー認証
 
+## システムアーキテクチャ
+
+このアプリケーションは以下のコンポーネントで構成されています：
+
+1. **フロントエンド（React SPA）**: ユーザーインターフェースを提供し、Firebase SDKを使用して認証を処理します。
+2. **バックエンド（Go API）**: フロントエンドからのリクエストを処理し、データベースとの通信を行います。
+3. **データベース（PostgreSQL）**: ユーザープロフィールなどのデータを永続化します。
+4. **Firebase Authentication**: ユーザー認証サービスを提供します。
+
 ## セットアップ手順
 
 ### 前提条件
 
-- Python 3.7以上
+- Go 1.16以上
 - Node.js 14以上
 - npm または yarn
+- PostgreSQL
 - Google Cloudアカウント
 - Firebaseプロジェクト
-
 
 #### Firebase設定
 
@@ -70,7 +78,6 @@ Firebase認証を使用したReact SPA のシンプルなウェブアプリケ�
 4. プロジェクト設定からWebアプリを追加
 5. 提供されるFirebase設定オブジェクトをコピー
 6. プロジェクト設定 > サービスアカウントから新しい秘密鍵を生成
-
 
 ### バックエンドのセットアップ
 
@@ -85,29 +92,27 @@ Firebase認証を使用したReact SPA のシンプルなウェブアプリケ�
    cd backend
    ```
 
-3. 仮想環境を作成して有効化:
+3. 依存関係をインストール:
    ```bash
-   python -m venv venv
-   # Windows
-   venv\Scripts\activate
-   # macOS/Linux
-   source venv/bin/activate
+   go mod download
    ```
 
-4. 依存関係をインストール:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-5. `.env.example`をコピーして`.env`ファイルを作成:
+4. `.env.example`をコピーして`.env`ファイルを作成:
    ```bash
    cp .env.example .env
    ```
 
-6. `.env`ファイルを編集し、必要な環境変数を設定:
+5. `.env`ファイルを編集し、必要な環境変数を設定:
    ```
+   # データベース設定
+   DB_HOST=localhost
+   DB_PORT=5432
+   DB_USER=postgres
+   DB_PASSWORD=yourpassword
+   DB_NAME=yourdbname
+
    # CORS設定
-   CORS_ORIGIN=http://localhost:3000
+   CORS_ORIGIN=http://localhost:5173
 
    # Firebase設定
    FIREBASE_PROJECT_ID=あなたのfirebaseプロジェクトID
@@ -121,19 +126,19 @@ Firebase認証を使用したReact SPA のシンプルなウェブアプリケ�
    FIREBASE_CLIENT_X509_CERT_URL=あなたのclient_x509_cert_url
    ```
 
-7. バックエンドサーバーを起動:
+6. バックエンドサーバーを起動:
    ```bash
    # Windows
-   python app.py
-   # または
    setup.bat
+   # または
+   go run main.go
 
    # macOS/Linux
-   python app.py
-   # または
    ./setup.sh
+   # または
+   go run main.go
    ```
-   サーバーは`http://localhost:5000`で実行されます。
+   サーバーは`http://localhost:8080`で実行されます。
 
 ### フロントエンドのセットアップ
 
@@ -163,7 +168,7 @@ Firebase認証を使用したReact SPA のシンプルなウェブアプリケ�
    VITE_FIREBASE_MESSAGING_SENDER_ID=あなたのmessagingSenderId
    VITE_FIREBASE_APP_ID=あなたのappId
    
-   VITE_API_BASE_URL=http://localhost:5000
+   VITE_API_BASE_URL=http://localhost:8080
    ```
 
 5. 開発サーバーを起動:
@@ -172,7 +177,7 @@ Firebase認証を使用したReact SPA のシンプルなウェブアプリケ�
    # または
    yarn dev
    ```
-   フロントエンドは`http://localhost:3000`で実行されます。
+   フロントエンドは`http://localhost:5173`で実行されます。
 
 ## 開発ガイド
 
@@ -180,29 +185,36 @@ Firebase認証を使用したReact SPA のシンプルなウェブアプリケ�
 
 - **コントローラーの追加**:
   1. `backend/controllers/`に新しいコントローラーファイルを作成
-  2. Blueprintを定義し、ルートを設定
-  3. 必要なサービスをコントローラー内で初期化
-  4. `app.py`でBlueprintを登録
+  2. 必要なルートとハンドラーを実装
+  3. `controllers/routes.go`にルートを登録
 
 - **サービスの追加**:
   1. `backend/services/`に新しいサービスファイルを作成
-  2. 必要なクラスとメソッドを実装
+  2. 必要な関数とメソッドを実装
   3. コントローラーからサービスをインポートして使用
 
+- **モデルの追加**:
+  1. `backend/models/`に新しいモデルファイルを作成
+  2. 必要な構造体とメソッドを実装
+
 - **テスト**:
-  1. `test_api.py`と`test_auth.py`を参考にテストを作成
-  2. `pytest`を使用してテストを実行
+  1. `test_api.go`と`test_auth.go`を参考にテストを作成
+  2. `go test`を使用してテストを実行
 
 ### フロントエンド開発
 
 - **コンポーネントの追加**:
-  1. `front/src/js/components/`に新しいコンポーネントファイルを作成
-  2. 必要なHTMLとJavaScriptを実装
-  3. メインアプリケーションからコンポーネントをインポートして使用
+  1. `front/src/components/`に新しいコンポーネントファイルを作成
+  2. 必要なJSXとロジックを実装
+  3. 他のコンポーネントやページからインポートして使用
 
-- **ビューの追加**:
-  1. `front/src/js/views/`に新しいビューファイルを作成
-  2. ルーターに新しいルートを追加
+- **ページの追加**:
+  1. `front/src/pages/`に新しいページファイルを作成
+  2. App.jsxにルートを追加
+
+- **サービスの追加**:
+  1. `front/src/services/`または`front/src/js/services/`に新しいサービスファイルを作成
+  2. APIとの通信ロジックを実装
 
 - **スタイルの追加**:
   1. `front/src/css/`にスタイルを追加
@@ -210,66 +222,74 @@ Firebase認証を使用したReact SPA のシンプルなウェブアプリケ�
 
 ## 使用方法
 
-1. アプリケーションにアクセス: `http://localhost:3000`
+1. アプリケーションにアクセス: `http://localhost:5173`
 2. ログインまたは新規ユーザー登録
-3. ホームページでYouTubeビデオを検索
-4. 検索結果から興味のあるビデオを選択
-5. 「要約を生成」ボタンをクリックして要約を取得
-6. プロフィールページでユーザー情報を管理
-7. 認証テストページで認証状態とトークンを確認可能
+3. ホームページでアプリケーションの機能を利用
+4. プロフィールページでユーザー情報を管理
+5. 認証テストページで認証状態とトークンを確認可能
 
 ## プロジェクト構造
 
 ```
 プロジェクトルート/
 ├── backend/                  # バックエンドアプリケーション
-│   ├── controllers/          # Blueprintコントローラー
-│   │   ├── __init__.py
-│   │   ├── auth_controller.py
-│   │   ├── main_controller.py
-│   │   └── profile_controller.py
+│   ├── controllers/          # コントローラー
+│   │   ├── auth_controller.go
+│   │   ├── main_controller.go
+│   │   ├── profile_controller.go
+│   │   └── routes.go
+│   ├── middleware/           # ミドルウェア
+│   │   └── auth_middleware.go
 │   ├── models/               # データモデル
-│   │   └── user_profile.py
-│   ├── services/             # サービスクラス
-│   │   ├── __init__.py
-│   │   ├── auth_service.py
-│   │   └── db_service.py
-│   ├── app.py                # メインFlaskアプリケーション
-│   ├── requirements.txt      # Pythonの依存関係
+│   │   └── user_profile.go
+│   ├── services/             # サービス
+│   │   ├── auth_service.go
+│   │   └── db_service.go
+│   ├── main.go               # メインGoアプリケーション
+│   ├── go.mod                # Goモジュール定義
+│   ├── go.sum                # Goモジュール依存関係
 │   ├── setup.bat             # Windowsセットアップスクリプト
 │   ├── setup.sh              # Unix/Linuxセットアップスクリプト
-│   ├── test_api.py           # APIテスト
-│   ├── test_auth.py          # 認証テスト
+│   ├── test_api.go           # APIテスト
+│   ├── test_auth.go          # 認証テスト
 │   └── .env.example          # 環境変数のサンプル
 │
 ├── front/                    # フロントエンドアプリケーション
 │   ├── src/
+│   │   ├── components/       # 再利用可能なコンポーネント
+│   │   │   └── NavBar.jsx
+│   │   ├── contexts/         # Reactコンテキスト
+│   │   │   └── AuthContext.jsx
 │   │   ├── css/              # スタイルシート
 │   │   │   ├── main.scss     # メインSCSSファイル
 │   │   │   └── style.css     # カスタムスタイル
 │   │   ├── js/               # JavaScriptファイル
-│   │   │   ├── components/   # 再利用可能なコンポーネント
 │   │   │   ├── services/     # APIサービス
 │   │   │   │   ├── auth-api-service.js
 │   │   │   │   ├── firebase.js
 │   │   │   │   └── profile-api-service.js
 │   │   │   ├── utils/        # ユーティリティ関数
 │   │   │   │   └── auth-test.js
-│   │   │   ├── views/        # ページビュー
-│   │   │   │   ├── about.js
-│   │   │   │   ├── auth-test.js
-│   │   │   │   ├── contact.js
-│   │   │   │   ├── home.js
-│   │   │   │   ├── login.js
-│   │   │   │   ├── profile.js
-│   │   │   │   └── register.js
 │   │   │   ├── bootstrap.js  # Bootstrap初期化
-│   │   │   └── main.js       # メインエントリーポイント
+│   │   │   └── main.js       # メインJavaScriptファイル
+│   │   ├── pages/            # ページコンポーネント
+│   │   │   ├── AboutPage.jsx
+│   │   │   ├── AuthTestPage.jsx
+│   │   │   ├── ContactPage.jsx
+│   │   │   ├── HomePage.jsx
+│   │   │   ├── LoginPage.jsx
+│   │   │   ├── ProfilePage.jsx
+│   │   │   └── RegisterPage.jsx
+│   │   ├── services/         # サービス
+│   │   │   └── api.js
+│   │   ├── App.jsx           # メインReactコンポーネント
+│   │   └── main.jsx          # Reactエントリーポイント
 │   ├── public/               # 静的ファイル
 │   │   └── _redirects        # Netlify用リダイレクト設定
 │   ├── etc/                  # その他の設定ファイル
 │   ├── index.html            # メインHTMLファイル
 │   ├── package.json          # npm依存関係
+│   ├── package-lock.json     # npm依存関係ロック
 │   ├── vite.config.js        # Vite設定
 │   └── .env.example          # 環境変数のサンプル
 │
@@ -296,17 +316,12 @@ Firebase認証を使用したReact SPA のシンプルなウェブアプリケ�
   1. バックエンドの`CORS_ORIGIN`設定がフロントエンドのURLと一致しているか確認
   2. フロントエンドの`VITE_API_BASE_URL`がバックエンドのURLと一致しているか確認
 
-- **YouTube API エラー**:
-  1. YouTube Data API v3が有効になっているか確認
-  2. APIキーが正しく設定されているか確認
-  3. APIキーの制限が適切に設定されているか確認
+### データベース接続エラー
 
-### Vertex AI エラー
-
-- **Geminiモデルエラー**:
-  1. Vertex AI APIが有効になっているか確認
-  2. サービスアカウントに適切な権限があるか確認
-  3. `GOOGLE_APPLICATION_CREDENTIALS`が正しく設定されているか確認
+- **PostgreSQL接続エラー**:
+  1. PostgreSQLサービスが実行されているか確認
+  2. データベース接続情報（ホスト、ポート、ユーザー名、パスワード、データベース名）が正しいか確認
+  3. データベースユーザーに適切な権限があるか確認
 
 ## ライセンス
 
