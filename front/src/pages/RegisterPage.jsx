@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Card, Form, Button, Alert, Row, Col } from 'react-bootstrap';
+import { Alert } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import '../css/register.css';
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -59,76 +60,74 @@ const RegisterPage = () => {
   };
 
   return (
-    <Row className="justify-content-center">
-      <Col md={6}>
-        <Card>
-          <Card.Header>
-            <h2 className="card-title mb-0">アカウント登録</h2>
-          </Card.Header>
-          <Card.Body>
-            {error && (
-              <Alert variant="danger" dismissible onClose={() => setError('')}>
+    <div className="register-page">
+      <div className="ring">
+        <i style={{ "--clr": "#00ff0a" }}></i>
+        <i style={{ "--clr": "#ff0057" }}></i>
+        <i style={{ "--clr": "#fffd44" }}></i>
+        <div className="register">
+          <h2>Signup</h2>
+          
+          {error && (
+            <div className="inputBx">
+              <Alert dismissible onClose={() => setError('')}>
                 {error}
               </Alert>
-            )}
-
-            <Form onSubmit={handleSubmit}>
-              <Form.Group className="mb-3" controlId="registerEmail">
-                <Form.Label>メールアドレス</Form.Label>
-                <Form.Control
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="registerPassword">
-                <Form.Label>パスワード</Form.Label>
-                <Form.Control
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                />
-                <Form.Text className="text-muted">
-                  パスワードは6文字以上である必要があります。
-                </Form.Text>
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="registerConfirmPassword">
-                <Form.Label>パスワード（確認）</Form.Label>
-                <Form.Control
-                  type="password"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  required
-                />
-              </Form.Group>
-
-              <div className="d-flex justify-content-between align-items-center">
-                <Button 
-                  variant="primary" 
-                  type="submit" 
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                      処理中...
-                    </>
-                  ) : '登録'}
-                </Button>
-                <Link to="/login">すでにアカウントをお持ちの方はログイン</Link>
+            </div>
+          )}
+          
+          <form onSubmit={handleSubmit}>
+            <div className="inputBx">
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            
+            <div className="inputBx">
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+              <div className="text-muted">
+                Password must be at least 6 characters
               </div>
-            </Form>
-          </Card.Body>
-        </Card>
-      </Col>
-    </Row>
+            </div>
+            
+            <div className="inputBx">
+              <input
+                type="password"
+                name="confirmPassword"
+                placeholder="Confirm Password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            
+            <div className="inputBx">
+              <input
+                type="submit"
+                value={isSubmitting ? "Processing..." : "Sign up"}
+                disabled={isSubmitting}
+              />
+            </div>
+          </form>
+          
+          <div className="links">
+            <Link to="/login">Already have an account? Login</Link>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

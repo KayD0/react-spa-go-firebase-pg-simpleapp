@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import { useAuth } from './contexts/AuthContext';
+import { useLocation } from 'react-router-dom';
 
 // Components
 import NavBar from './components/NavBar';
@@ -38,10 +39,22 @@ const PublicRoute = ({ children }) => {
 };
 
 function App() {
+  const location = useLocation();
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
+  
   return (
     <>
+      {/* Animated background for all pages */}
+      {!isAuthPage && (
+        <div className="animated-bg">
+          <i></i>
+          <i></i>
+          <i></i>
+        </div>
+      )}
+      
       <NavBar />
-      <Container className="py-4">
+      <Container className={isAuthPage ? "p-0 m-0 container-fluid" : "py-4"} style={isAuthPage ? {maxWidth: '100%'} : {}}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />

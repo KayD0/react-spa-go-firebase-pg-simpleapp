@@ -1,0 +1,13 @@
+/* Font declarations */
+@font-face {
+  font-family: 'Nicomoji';
+  src: url('../assets/fonts/nicomoji/nicomoji-plus_v2-5.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Class for using the Nicomoji font */
+.nicomoji-font {
+  font-family: 'Nicomoji';
+}

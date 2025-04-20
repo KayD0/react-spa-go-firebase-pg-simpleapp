@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Card, Form, Button, Alert, Row, Col } from 'react-bootstrap';
+import { Alert } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import '../css/login.css';
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
-    email: '',
+    username: '',
     password: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -27,7 +28,10 @@ const LoginPage = () => {
     setIsSubmitting(true);
 
     try {
-      const { email, password } = formData;
+      // Using username as email for authentication
+      const { username, password } = formData;
+      // Treat username as email for Firebase authentication
+      const email = username.includes('@') ? username : `${username}@example.com`;
       const { user, error: signInError } = await signIn(email, password);
 
       if (signInError) {
@@ -45,62 +49,61 @@ const LoginPage = () => {
   };
 
   return (
-    <Row className="justify-content-center">
-      <Col md={6}>
-        <Card>
-          <Card.Header>
-            <h2 className="card-title mb-0">ログイン</h2>
-          </Card.Header>
-          <Card.Body>
-            {error && (
-              <Alert variant="danger" dismissible onClose={() => setError('')}>
+    <div className="login-page">
+      <div className="ring">
+        <i style={{ "--clr": "#00ff0a" }}></i>
+        <i style={{ "--clr": "#ff0057" }}></i>
+        <i style={{ "--clr": "#fffd44" }}></i>
+        <div className="login">
+          <h2>Login</h2>
+          
+          {error && (
+            <div className="inputBx">
+              <Alert dismissible onClose={() => setError('')}>
                 {error}
               </Alert>
-            )}
-
-            <Form onSubmit={handleSubmit}>
-              <Form.Group className="mb-3" controlId="loginEmail">
-                <Form.Label>メールアドレス</Form.Label>
-                <Form.Control
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="loginPassword">
-                <Form.Label>パスワード</Form.Label>
-                <Form.Control
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                />
-              </Form.Group>
-
-              <div className="d-flex justify-content-between align-items-center">
-                <Button 
-                  variant="primary" 
-                  type="submit" 
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                      処理中...
-                    </>
-                  ) : 'ログイン'}
-                </Button>
-                <Link to="/register">アカウントをお持ちでない方は登録</Link>
-              </div>
-            </Form>
-          </Card.Body>
-        </Card>
-      </Col>
-    </Row>
+            </div>
+          )}
+          
+          <form onSubmit={handleSubmit}>
+            <div className="inputBx">
+              <input
+                type="text"
+                name="username"
+                placeholder="Username"
+                value={formData.username}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            
+            <div className="inputBx">
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            
+            <div className="inputBx">
+              <input
+                type="submit"
+                value={isSubmitting ? "Signing in..." : "Sign in"}
+                disabled={isSubmitting}
+              />
+            </div>
+          </form>
+          
+          <div className="links">
+            <a href="#">Forget Password</a>
+            <Link to="/register">Signup</Link>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
