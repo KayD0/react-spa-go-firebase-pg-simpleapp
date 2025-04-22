@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/simpleapp/middleware"
-	"github.com/simpleapp/models"
-	"github.com/simpleapp/services"
+	"github.com/baseapp/middleware"
+	"github.com/baseapp/models"
+	"github.com/baseapp/services"
 )
 
 // RegisterProfileRoutes registers the profile routes

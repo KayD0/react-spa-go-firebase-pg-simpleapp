@@ -9,8 +9,11 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/simpleapp/controllers"
-	"github.com/simpleapp/services"
+	"github.com/baseapp/backend/application/usecase"
+	"github.com/baseapp/backend/infrastructure/auth"
+	"github.com/baseapp/backend/infrastructure/persistence"
+	"github.com/baseapp/backend/interface/controller"
+	"github.com/baseapp/backend/interface/repository"
 )
 
 func main() {
@@ -37,18 +40,40 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	// Initialize Firebase Admin SDK
-	if err := services.InitializeFirebase(); err != nil {
+	// Initialize Firebase Auth
+	firebaseAuth, err := auth.NewFirebaseAuth()
+	if err != nil {
 		log.Printf("Warning: Failed to initialize Firebase Admin SDK: %v", err)
 	}
 
 	// Initialize database
-	if err := services.InitDB(); err != nil {
+	db, err := persistence.NewDatabase()
+	if err != nil {
 		log.Fatalf("Failed to initialize database: %v", err)
 	}
 
-	// Register routes
-	controllers.RegisterRoutes(router)
+	// Auto migrate the schema
+	if err := db.AutoMigrate(&persistence.UserProfileModel{}); err != nil {
+		log.Fatalf("Failed to migrate database schema: %v", err)
+	}
+	log.Println("Database connected and migrated successfully")
+
+	// Initialize repositories
+	authRepo := repository.NewAuthRepository(firebaseAuth)
+	userRepo := repository.NewUserRepository(db.DB)
+
+	// Initialize use cases
+	authUseCase := usecase.NewAuthUseCase(authRepo)
+	userUseCase := usecase.NewUserUseCase(userRepo)
+
+	// Initialize controllers
+	authController := controller.NewAuthController(authUseCase)
+	mainController := controller.NewMainController()
+	userController := controller.NewUserController(userUseCase, authController)
+
+	// Initialize router
+	routerHandler := controller.NewRouter(router, authController, userController, mainController)
+	routerHandler.SetupRoutes()
 
 	// Get port from environment variable or use default
 	port := os.Getenv("PORT")

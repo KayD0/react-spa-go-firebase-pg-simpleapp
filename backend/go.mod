@@ -1,4 +1,4 @@
-module github.com/simpleapp
+module github.com/baseapp
 
 go 1.21
 

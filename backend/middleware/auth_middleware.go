@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 	"github.com/gin-gonic/gin"
-	"github.com/simpleapp/services"
+	"github.com/baseapp/services"
 )
 
 // AuthRequired is a middleware that checks if the request has a valid Firebase ID token

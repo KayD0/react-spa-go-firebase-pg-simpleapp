@@ -1,4 +1,4 @@
-package services
+package persistence
 
 import (
 	"fmt"
@@ -6,19 +6,18 @@ import (
 	"os"
 	"time"
 
-	"github.com/baseapp/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
 
-var (
-	// DB is the global database instance
+// Database provides access to the database
+type Database struct {
 	DB *gorm.DB
-)
+}
 
-// InitDB initializes the database connection
-func InitDB() error {
+// NewDatabase creates a new Database
+func NewDatabase() (*Database, error) {
 	// Get database connection info from environment variables
 	dbHost := os.Getenv("DB_HOST")
 	if dbHost == "" {
@@ -61,20 +60,19 @@ func InitDB() error {
 	)
 
 	// Connect to database
-	var err error
-	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: newLogger,
 	})
 	if err != nil {
-		return fmt.Errorf("failed to connect to database: %v", err)
+		return nil, fmt.Errorf("failed to connect to database: %v", err)
 	}
 
-	// Auto migrate the schema
-	err = DB.AutoMigrate(&models.UserProfile{})
-	if err != nil {
-		return fmt.Errorf("failed to migrate database schema: %v", err)
-	}
+	return &Database{
+		DB: db,
+	}, nil
+}
 
-	log.Println("Database connected and migrated successfully")
-	return nil
+// AutoMigrate runs auto migration for the given models
+func (d *Database) AutoMigrate(models ...interface{}) error {
+	return d.DB.AutoMigrate(models...)
 }
