@@ -50,7 +50,7 @@ func TestAPI() {
 	}
 }
 
-func main() {
+func api_test() {
 	// Parse command line flags
 	flag.Parse()
 

@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"github.com/baseapp/backend/application/dto"
-	"github.com/baseapp/backend/domain/repository"
+	"github.com/baseapp/application/dto"
+	"github.com/baseapp/domain/repository"
 )
 
 // AuthUseCase implements the authentication-related business logic

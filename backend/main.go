@@ -9,11 +9,11 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/baseapp/backend/application/usecase"
-	"github.com/baseapp/backend/infrastructure/auth"
-	"github.com/baseapp/backend/infrastructure/persistence"
-	"github.com/baseapp/backend/interface/controller"
-	"github.com/baseapp/backend/interface/repository"
+	"github.com/baseapp/application/usecase"
+	"github.com/baseapp/infrastructure/auth"
+	"github.com/baseapp/infrastructure/persistence"
+	"github.com/baseapp/interface/controller"
+	"github.com/baseapp/interface/repository"
 )
 
 func main() {

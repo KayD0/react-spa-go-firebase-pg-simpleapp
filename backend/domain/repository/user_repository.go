@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 
-	"github.com/baseapp/backend/domain/entity"
+	"github.com/baseapp/domain/entity"
 )
 
 // UserRepository defines the interface for user data operations

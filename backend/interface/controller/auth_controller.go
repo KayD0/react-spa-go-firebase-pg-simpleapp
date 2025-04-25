@@ -3,10 +3,10 @@ package controller
 import (
 	"net/http"
 	"strings"
+	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/baseapp/backend/application/dto"
-	"github.com/baseapp/backend/application/usecase"
+	"github.com/baseapp/application/usecase"
 )
 
 // AuthController handles authentication-related HTTP requests
@@ -68,6 +68,7 @@ func (c *AuthController) GetUserIDFromToken(ctx *gin.Context) (string, error) {
 	}
 
 	// Extract the user ID
+	log.Println(response)
 	uid, err := c.authUseCase.GetUserIDFromClaims(response.User)
 	if err != nil {
 		return "", &AuthError{Message: err.Error()}

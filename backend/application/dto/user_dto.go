@@ -3,7 +3,7 @@ package dto
 import (
 	"time"
 
-	"github.com/baseapp/backend/domain/entity"
+	"github.com/baseapp/domain/entity"
 )
 
 // UserResponse represents the user data that will be sent to clients

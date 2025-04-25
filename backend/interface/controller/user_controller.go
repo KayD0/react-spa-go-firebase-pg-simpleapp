@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/baseapp/backend/application/dto"
-	"github.com/baseapp/backend/application/usecase"
+	"github.com/baseapp/application/dto"
+	"github.com/baseapp/application/usecase"
 )
 
 // UserController handles user-related HTTP requests

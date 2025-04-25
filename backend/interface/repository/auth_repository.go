@@ -3,8 +3,8 @@ package repository
 import (
 	"context"
 
-	"github.com/baseapp/backend/domain/repository"
-	"github.com/baseapp/backend/infrastructure/auth"
+	"github.com/baseapp/domain/repository"
+	"github.com/baseapp/infrastructure/auth"
 )
 
 // AuthRepositoryImpl implements the AuthRepository interface

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -130,7 +129,7 @@ func TestAuthVerification(token string) {
 	}
 }
 
-func main() {
+func auth_test() {
 	// Define command line flags
 	tokenPtr := flag.String("token", "", "Firebase ID token for authentication")
 	

@@ -5,8 +5,8 @@ import (
 	"errors"
 	"time"
 
-	"github.com/baseapp/backend/domain/entity"
-	"github.com/baseapp/backend/domain/repository"
+	"github.com/baseapp/domain/entity"
+	"github.com/baseapp/domain/repository"
 	"gorm.io/gorm"
 )
 

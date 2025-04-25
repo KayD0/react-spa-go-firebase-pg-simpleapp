@@ -5,9 +5,9 @@ import (
 	"errors"
 	"time"
 
-	"github.com/baseapp/backend/application/dto"
-	"github.com/baseapp/backend/domain/entity"
-	"github.com/baseapp/backend/domain/repository"
+	"github.com/baseapp/application/dto"
+	"github.com/baseapp/domain/entity"
+	"github.com/baseapp/domain/repository"
 )
 
 // UserUseCase implements the user-related business logic
