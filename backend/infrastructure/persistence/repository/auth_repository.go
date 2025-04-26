@@ -1,25 +1,26 @@
 package repository
 
 import (
-    "context"
+    "context" // コンテキストパッケージをインポート
 
-    "github.com/baseapp/domain/repository"
-    "github.com/baseapp/infrastructure/auth"
+    "github.com/baseapp/domain/repository" // ドメインリポジトリをインポート
+    "github.com/baseapp/infrastructure/auth" // 認証インフラストラクチャをインポート
 )
 
-// AuthRepositoryImpl implements the AuthRepository interface
+// AuthRepositoryImpl は AuthRepository インターフェースを実装します
 type AuthRepositoryImpl struct {
-    firebaseAuth auth.FirebaseAuth
+    firebaseAuth auth.FirebaseAuth // Firebase 認証インスタンス
 }
 
-// NewAuthRepository creates a new AuthRepositoryImpl
+// NewAuthRepository は新しい AuthRepositoryImpl を作成します
 func NewAuthRepository(firebaseAuth auth.FirebaseAuth) repository.AuthRepository {
     return &AuthRepositoryImpl{
-        firebaseAuth: firebaseAuth,
+        firebaseAuth: firebaseAuth, // Firebase 認証インスタンスを設定
     }
 }
 
-// VerifyToken verifies an authentication token and returns the claims
+// VerifyToken は認証トークンを検証し、クレームを返します
 func (r *AuthRepositoryImpl) VerifyToken(ctx context.Context, token string) (map[string]interface{}, error) {
+    // Firebase 認証インスタンスを使用してトークンを検証
     return r.firebaseAuth.VerifyIDToken(ctx, token)
 }

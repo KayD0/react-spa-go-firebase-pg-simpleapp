@@ -7,46 +7,48 @@ import (
     "github.com/baseapp/services"
 )
 
-// AuthRequired is a middleware that checks if the request has a valid Firebase ID token
+// AuthRequired はリクエストに有効な Firebase ID トークンが含まれているかをチェックするミドルウェアです
 func AuthRequired() gin.HandlerFunc {
     return func(c *gin.Context) {
-        // Get the Authorization header
+        // Authorization ヘッダーを取得
         authHeader := c.GetHeader("Authorization")
         if authHeader == "" {
+            // ヘッダーが存在しない場合、401 Unauthorized を返す
             c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorizationヘッダーがありません"})
-            c.Abort()
+            c.Abort() // リクエストの処理を中止
             return
         }
 
-        // Extract the token (remove 'Bearer ' prefix if present)
+        // トークンを抽出（'Bearer ' プレフィックスを削除）
         idToken := authHeader
         if strings.HasPrefix(authHeader, "Bearer ") {
             idToken = strings.TrimPrefix(authHeader, "Bearer ")
         }
 
-        // Verify the token
+        // トークンを検証
         token, err := services.VerifyIDToken(idToken)
         if err != nil {
+            // トークンが無効な場合、401 Unauthorized を返す
             c.JSON(http.StatusUnauthorized, gin.H{"error": "無効な認証トークンです: " + err.Error()})
-            c.Abort()
+            c.Abort() // リクエストの処理を中止
             return
         }
 
-        // Store the token in the context
+        // トークンをコンテキストに保存
         c.Set("user", token)
-        c.Next()
+        c.Next() // 次のハンドラーを呼び出す
     }
 }
 
-// GetUserIDFromToken extracts the user ID from the token in the context
+// GetUserIDFromToken はコンテキスト内のトークンからユーザーIDを抽出します
 func GetUserIDFromToken(c *gin.Context) (string, error) {
-    // Get the user from the context
+    // コンテキストからユーザーを取得
     user, exists := c.Get("user")
     if !exists {
         return "", &services.AuthError{Message: "認証されていません。AuthRequiredミドルウェアを使用してください。"}
     }
 
-    // Extract the user ID
+    // ユーザーIDを抽出
     token := user.(map[string]interface{})
 
     uid, ok := token["user_id"].(string)
@@ -54,5 +56,5 @@ func GetUserIDFromToken(c *gin.Context) (string, error) {
         return "", &services.AuthError{Message: "ユーザーIDが見つかりません"}
     }
 
-    return uid, nil
+    return uid, nil // ユーザーIDを返す
 }

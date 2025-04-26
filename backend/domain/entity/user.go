@@ -1,17 +1,17 @@
 package entity
 
 import (
-    "time"
+    "time" // 時間関連のパッケージをインポート
 )
 
-// User represents a user entity in the domain
+// User はドメイン内のユーザーエンティティを表します
 type User struct {
-    ID          uint
-    FirebaseUID string
-    DisplayName string
-    Bio         string
-    Location    string
-    Website     string
-    CreatedAt   time.Time
-    UpdatedAt   time.Time
+    ID          uint      // ユーザーの一意な識別子
+    FirebaseUID string    // Firebase におけるユーザーの UID
+    DisplayName string    // ユーザーの表示名
+    Bio         string    // ユーザーの自己紹介
+    Location    string    // ユーザーの所在地
+    Website     string    // ユーザーのウェブサイトURL
+    CreatedAt   time.Time // ユーザーが作成された日時
+    UpdatedAt   time.Time // ユーザーが最後に更新された日時
 }

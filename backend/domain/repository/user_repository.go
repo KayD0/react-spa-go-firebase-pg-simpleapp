@@ -1,22 +1,22 @@
 package repository
 
 import (
-    "context"
+    "context" // コンテキストパッケージをインポート
 
-    "github.com/baseapp/domain/entity"
+    "github.com/baseapp/domain/entity" // ドメインエンティティをインポート
 )
 
-// UserRepository defines the interface for user data operations
+// UserRepository はユーザーデータ操作のためのインターフェースを定義します
 type UserRepository interface {
-    // FindByID finds a user by ID
+    // FindByID は ID に基づいてユーザーを検索します
     FindByID(ctx context.Context, id uint) (*entity.User, error)
     
-    // FindByFirebaseUID finds a user by Firebase UID
+    // FindByFirebaseUID は Firebase UID に基づいてユーザーを検索します
     FindByFirebaseUID(ctx context.Context, firebaseUID string) (*entity.User, error)
     
-    // Create creates a new user
+    // Create は新しいユーザーを作成します
     Create(ctx context.Context, user *entity.User) error
     
-    // Update updates an existing user
+    // Update は既存のユーザーを更新します
     Update(ctx context.Context, user *entity.User) error
 }

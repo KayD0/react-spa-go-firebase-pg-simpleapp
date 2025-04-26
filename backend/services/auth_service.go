@@ -13,23 +13,23 @@ import (
 )
 
 var (
-    firebaseApp *firebase.App
-    authClient  *auth.Client
+    firebaseApp *firebase.App // Firebase アプリのインスタンス
+    authClient  *auth.Client  // Firebase 認証クライアント
 )
 
-// AuthError represents an authentication error
+// AuthError は認証エラーを表します
 type AuthError struct {
-    Message string
+    Message string // エラーメッセージ
 }
 
-// Error returns the error message
+// Error はエラーメッセージを返します
 func (e *AuthError) Error() string {
     return e.Message
 }
 
-// InitializeFirebase initializes the Firebase Admin SDK
+// InitializeFirebase は Firebase Admin SDK を初期化します
 func InitializeFirebase() error {
-    // Check if Firebase is already initialized
+    // Firebase がすでに初期化されているか確認
     if firebaseApp != nil {
         return nil
     }
@@ -38,9 +38,9 @@ func InitializeFirebase() error {
     var app *firebase.App
     var err error
 
-    // Check if environment variables for service account are provided
+    // 環境変数にサービスアカウントの情報が提供されているか確認
     if os.Getenv("FIREBASE_PROJECT_ID") != "" {
-        // Create a service account credential from environment variables
+        // 環境変数からサービスアカウントの資格情報を作成
         serviceAccount := map[string]interface{}{
             "type":                        "service_account",
             "project_id":                  os.Getenv("FIREBASE_PROJECT_ID"),
@@ -54,54 +54,55 @@ func InitializeFirebase() error {
             "client_x509_cert_url":        os.Getenv("FIREBASE_CLIENT_X509_CERT_URL"),
         }
 
+        // サービスアカウントを JSON 形式にマシュアル
         serviceAccountJSON, err := json.Marshal(serviceAccount)
         if err != nil {
-            return fmt.Errorf("failed to marshal service account: %v", err)
+            return fmt.Errorf("サービスアカウントのマシュアルに失敗しました: %v", err)
         }
 
-        // Initialize Firebase with service account
+        // サービスアカウントで Firebase を初期化
         opt := option.WithCredentialsJSON(serviceAccountJSON)
         app, err = firebase.NewApp(ctx, nil, opt)
         if err != nil {
-            return fmt.Errorf("error initializing Firebase with service account: %v", err)
+            return fmt.Errorf("サービスアカウントで Firebase を初期化中にエラーが発生しました: %v", err)
         }
-        log.Println("Firebase Admin SDK initialized with service account credentials")
+        log.Println("サービスアカウント資格情報で Firebase Admin SDK が初期化されました")
     } else {
-        // Initialize Firebase with application default credentials
+        // アプリケーションのデフォルト資格情報で Firebase を初期化
         app, err = firebase.NewApp(ctx, nil)
         if err != nil {
-            return fmt.Errorf("error initializing Firebase with default credentials: %v", err)
+            return fmt.Errorf("デフォルト資格情報で Firebase を初期化中にエラーが発生しました: %v", err)
         }
-        log.Println("Firebase Admin SDK initialized with application default credentials")
+        log.Println("アプリケーションのデフォルト資格情報で Firebase Admin SDK が初期化されました")
     }
 
-    // Get Auth client
+    // Auth クライアントを取得
     client, err := app.Auth(ctx)
     if err != nil {
-        return fmt.Errorf("error getting Auth client: %v", err)
+        return fmt.Errorf("Auth クライアントの取得中にエラーが発生しました: %v", err)
     }
 
-    // Store the Firebase app and Auth client
+    // Firebase アプリと Auth クライアントを保存
     firebaseApp = app
     authClient = client
 
     return nil
 }
 
-// VerifyIDToken verifies a Firebase ID token and returns the decoded token
+// VerifyIDToken は Firebase ID トークンを検証し、デコードされたトークンを返します
 func VerifyIDToken(idToken string) (map[string]interface{}, error) {
-    // Check if Firebase is initialized
+    // Firebase が初期化されているか確認
     if authClient == nil {
-        return nil, &AuthError{Message: "Firebase Auth client is not initialized"}
+        return nil, &AuthError{Message: "Firebase Auth クライアントが初期化されていません"}
     }
 
-    // Verify the token
+    // トークンを検証
     ctx := context.Background()
     token, err := authClient.VerifyIDToken(ctx, idToken)
     if err != nil {
-        return nil, fmt.Errorf("error verifying ID token: %v", err)
+        return nil, fmt.Errorf("ID トークンの検証中にエラーが発生しました: %v", err)
     }
 
-    // Return the token claims
+    // トークンのクレームを返す
     return token.Claims, nil
 }

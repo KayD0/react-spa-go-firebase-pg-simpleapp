@@ -1,11 +1,11 @@
 package repository
 
 import (
-    "context"
+    "context" // コンテキストパッケージをインポート
 )
 
-// AuthRepository defines the interface for authentication operations
+// AuthRepository は認証操作のためのインターフェースを定義します
 type AuthRepository interface {
-    // VerifyToken verifies an authentication token and returns the claims
+    // VerifyToken は認証トークンを検証し、クレームを返します
     VerifyToken(ctx context.Context, token string) (map[string]interface{}, error)
 }

@@ -8,79 +8,81 @@ import (
     "github.com/baseapp/application/usecase"
 )
 
-// AuthController handles authentication-related HTTP requests
+// AuthController は認証関連のHTTPリクエストを処理する構造体です
 type AuthController struct {
-    authUseCase *usecase.AuthUseCase
+    authUseCase *usecase.AuthUseCase // 認証ユースケースのインスタンス
 }
 
-// NewAuthController creates a new AuthController
+// NewAuthController は新しい AuthController を作成するコンストラクタです
 func NewAuthController(authUseCase *usecase.AuthUseCase) *AuthController {
     return &AuthController{
-        authUseCase: authUseCase,
+        authUseCase: authUseCase, // 引数として渡されたユースケースをフィールドに設定
     }
 }
 
-// VerifyAuth handles the auth verification route
+// VerifyAuth は認証検証ルートを処理するメソッドです
 func (c *AuthController) VerifyAuth(ctx *gin.Context) {
-    // Get the Authorization header
+    // Authorization ヘッダーを取得
     authHeader := ctx.GetHeader("Authorization")
     if authHeader == "" {
+        // ヘッダーが空の場合、401 Unauthorized を返す
         ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Authorizationヘッダーがありません"})
         return
     }
 
-    // Extract the token (remove 'Bearer ' prefix if present)
+    // トークンを抽出（'Bearer ' プレフィックスを削除）
     idToken := authHeader
     if strings.HasPrefix(authHeader, "Bearer ") {
         idToken = strings.TrimPrefix(authHeader, "Bearer ")
     }
 
-    // Verify the token
+    // トークンを検証
     response, err := c.authUseCase.VerifyToken(ctx.Request.Context(), idToken)
     if err != nil {
+        // 検証に失敗した場合、401 Unauthorized を返す
         ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
         return
     }
 
-    // Return the response
+    // 検証成功時、レスポンスを返す
     ctx.JSON(http.StatusOK, response)
 }
 
-// GetUserIDFromToken extracts the user ID from the token in the context
+// GetUserIDFromToken はコンテキスト内のトークンからユーザーIDを抽出するメソッドです
 func (c *AuthController) GetUserIDFromToken(ctx *gin.Context) (string, error) {
-    // Get the Authorization header
+    // Authorization ヘッダーを取得
     authHeader := ctx.GetHeader("Authorization")
     if authHeader == "" {
-        return "", &AuthError{Message: "Authorizationヘッダーがありません"}
+        return "", &AuthError{Message: "Authorizationヘッダーがありません"} // エラーを返す
     }
 
-    // Extract the token (remove 'Bearer ' prefix if present)
+    // トークンを抽出（'Bearer ' プレフィックスを削除）
     idToken := authHeader
     if strings.HasPrefix(authHeader, "Bearer ") {
         idToken = strings.TrimPrefix(authHeader, "Bearer ")
     }
 
-    // Verify the token
+    // トークンを検証
     response, err := c.authUseCase.VerifyToken(ctx.Request.Context(), idToken)
     if err != nil {
-        return "", &AuthError{Message: err.Error()}
+        return "", &AuthError{Message: err.Error()} // エラーを返す
     }
 
-    // Extract the user ID
+    // ユーザーIDを抽出
     uid, err := c.authUseCase.GetUserIDFromClaims(response.User)
     if err != nil {
-        return "", &AuthError{Message: err.Error()}
+        return "", &AuthError{Message: err.Error()} // エラーを返す
     }
 
-    return uid, nil
+    return uid, nil // ユーザーIDを返す
 }
 
-// AuthError represents an authentication error
+// AuthError は認証エラーを表す構造体です
 type AuthError struct {
-    Message string
+    Message string // エラーメッセージ
 }
 
-// Error returns the error message
+// Error メソッドはエラーメッセージを返します
 func (e *AuthError) Error() string {
     return e.Message
 }

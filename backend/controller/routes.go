@@ -4,15 +4,15 @@ import (
     "github.com/gin-gonic/gin"
 )
 
-// Router handles all the routes
+// Router はすべてのルートを処理する構造体です
 type Router struct {
-    engine         *gin.Engine
-    authController *AuthController
-    userController *UserController
-    mainController *MainController
+    engine         *gin.Engine       // Gin エンジンのインスタンス
+    authController *AuthController   // 認証コントローラのインスタンス
+    userController *UserController   // ユーザコントローラのインスタンス
+    mainController *MainController   // メインコントローラのインスタンス
 }
 
-// NewRouter creates a new Router
+// NewRouter は新しい Router を作成するコンストラクタです
 func NewRouter(
     engine *gin.Engine,
     authController *AuthController,
@@ -20,43 +20,47 @@ func NewRouter(
     mainController *MainController,
 ) *Router {
     return &Router{
-        engine:         engine,
-        authController: authController,
-        userController: userController,
-        mainController: mainController,
+        engine:         engine,         // 引数として渡された Gin エンジンをフィールドに設定
+        authController: authController, // 認証コントローラをフィールドに設定
+        userController: userController, // ユーザコントローラをフィールドに設定
+        mainController: mainController, // メインコントローラをフィールドに設定
     }
 }
 
-// SetupRoutes sets up all the routes
+// SetupRoutes はすべてのルートを設定するメソッドです
 func (r *Router) SetupRoutes() {
-    // Main routes
+    // メインルート
     r.engine.GET("/", r.mainController.Index)
 
-    // Auth routes
+    // 認証ルート
     authGroup := r.engine.Group("/api/auth")
     {
+        // 認証検証のための POST ルートを設定
         authGroup.POST("/verify", r.AuthMiddleware(), r.authController.VerifyAuth)
     }
 
-    // Profile routes
+    // プロフィールルート
     profileGroup := r.engine.Group("/api")
     {
+        // プロフィール取得のための GET ルートを設定
         profileGroup.GET("/profile", r.AuthMiddleware(), r.userController.GetProfile)
+        // プロフィール更新のための PUT ルートを設定
         profileGroup.PUT("/profile", r.AuthMiddleware(), r.userController.UpdateProfile)
     }
 }
 
-// AuthMiddleware is a middleware that checks if the request has a valid authentication token
+// AuthMiddleware はリクエストに有効な認証トークンがあるかをチェックするミドルウェアです
 func (r *Router) AuthMiddleware() gin.HandlerFunc {
     return func(c *gin.Context) {
-        // Get the Authorization header
+        // Authorization ヘッダーを取得
         authHeader := c.GetHeader("Authorization")
         if authHeader == "" {
+            // ヘッダーが空の場合、401 Unauthorized を返す
             c.JSON(401, gin.H{"error": "Authorizationヘッダーがありません"})
-            c.Abort()
+            c.Abort() // リクエストの処理を中止
             return
         }
 
-        c.Next()
+        c.Next() // 次のハンドラに処理を渡す
     }
 }
