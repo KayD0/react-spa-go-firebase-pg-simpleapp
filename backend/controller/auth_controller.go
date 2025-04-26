@@ -3,7 +3,6 @@ package controller
 import (
 	"net/http"
 	"strings"
-	"log"
 
 	"github.com/gin-gonic/gin"
 	"github.com/baseapp/application/usecase"

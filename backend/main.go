@@ -12,8 +12,8 @@ import (
 	"github.com/baseapp/application/usecase"
 	"github.com/baseapp/infrastructure/auth"
 	"github.com/baseapp/infrastructure/persistence"
-	"github.com/baseapp/interface/controller"
-	"github.com/baseapp/interface/repository"
+	"github.com/baseapp/infrastructure/persistence/repository"	
+	"github.com/baseapp/controller"
 )
 
 func main() {
