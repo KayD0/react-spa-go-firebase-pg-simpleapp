@@ -68,7 +68,6 @@ func (c *AuthController) GetUserIDFromToken(ctx *gin.Context) (string, error) {
 	}
 
 	// Extract the user ID
-	log.Println(response)
 	uid, err := c.authUseCase.GetUserIDFromClaims(response.User)
 	if err != nil {
 		return "", &AuthError{Message: err.Error()}

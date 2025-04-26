@@ -12,6 +12,7 @@ func NewAuthResponse(claims map[string]interface{}) *AuthResponse {
 		Authenticated: true,
 		User: map[string]interface{}{
 			"uid":            claims["uid"],
+			"user_id":        claims["user_id"],
 			"email":          claims["email"],
 			"email_verified": claims["email_verified"],
 			"auth_time":      claims["auth_time"],
