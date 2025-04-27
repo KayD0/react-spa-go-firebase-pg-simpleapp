@@ -1,67 +1,73 @@
-# Go Backend for User Profile API
+# ユーザープロファイルAPIのGoバックエンド
 
-This is a Go implementation of the User Profile API backend, replacing the original Python implementation.
+これは、元のPython実装を置き換える形でのユーザープロファイルAPIバックエンドのGo実装です。
 
-## Features
+## 機能
 
-- User authentication using Firebase
-- User profile management
-- PostgreSQL database integration
-- RESTful API endpoints
+- 柔軟な認証サービスアーキテクチャ（Firebase、モックなど）
+- ユーザープロフィール管理
+- PostgreSQLデータベース統合
+- RESTful APIエンドポイント
 
-## Prerequisites
+## 前提条件
 
-- Go 1.21 or higher
-- PostgreSQL database
-- Firebase project
+- Go 1.21以上
+- PostgreSQLデータベース
+- Firebaseプロジェクト
 
-## Environment Variables
+## 認証サービス
 
-Copy the `.env.example` file to `.env` and fill in the values:
+このアプリケーションは、異なる認証プロバイダーを簡単に切り替えられる柔軟な認証アーキテクチャを採用しています。現在サポートされている認証サービス：
+
+- **Firebase認証** - デフォルトの認証プロバイダー
+- **モック認証** - テスト環境用の簡易認証
+
+認証サービスは環境変数 `AUTH_SERVICE_TYPE` で設定できます：
+- `firebase` - Firebase認証を使用（デフォルト）
+- `mock` - モック認証を使用（テスト用）
+
+新しい認証サービスを追加するには：
+1. `AuthService` インターフェースを実装する新しいサービスを作成
+2. `auth_factory.go` に新しいサービスタイプを追加
+3. 環境変数で新しいサービスを選択
+
+## 環境変数
+
+`.env.example`ファイルを`.env`にコピーし、値を入力してください：
 
 ```bash
 cp .env.example .env
 ```
 
-## Installation
+## インストール
 
-1. Install dependencies:
+1. 依存関係をインストールします：
 
 ```bash
 go mod download
 ```
 
-2. Build the application:
+2. アプリケーションをビルドします：
 
 ```bash
 go build -o app
 ```
 
-## Running the Application
+## アプリケーションの実行
 
 ```bash
 ./app
 ```
 
-Or directly with Go:
+または、Goを直接使用して実行します：
 
 ```bash
 go run main.go
 ```
 
-## API Endpoints
+## APIエンドポイント
 
-- `GET /` - API information
-- `POST /api/auth/verify` - Verify authentication token
-- `GET /api/profile` - Get user profile
-- `PUT /api/profile` - Update user profile
-
-## Development
-
-### Project Structure
-
-- `main.go` - Application entry point
-- `controllers/` - API route handlers
-- `middleware/` - Middleware functions
-- `models/` - Database models
-- `services/` - Business logic and external services
+- `GET /` - API情報
+- `POST /api/auth/verify` - 認証トークンの検証
+- `GET /api/profile` - ユーザープロフィールの取得
+- `PUT /api/profile` - ユーザープロフィールの更新

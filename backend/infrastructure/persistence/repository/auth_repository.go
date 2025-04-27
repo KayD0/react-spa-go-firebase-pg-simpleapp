@@ -9,18 +9,18 @@ import (
 
 // AuthRepositoryImpl は AuthRepository インターフェースを実装します
 type AuthRepositoryImpl struct {
-    firebaseAuth auth.FirebaseAuth // Firebase 認証インスタンス
+    authService auth.AuthService // 認証サービスインスタンス
 }
 
 // NewAuthRepository は新しい AuthRepositoryImpl を作成します
-func NewAuthRepository(firebaseAuth auth.FirebaseAuth) repository.AuthRepository {
+func NewAuthRepository(authService auth.AuthService) repository.AuthRepository {
     return &AuthRepositoryImpl{
-        firebaseAuth: firebaseAuth, // Firebase 認証インスタンスを設定
+        authService: authService, // 認証サービスインスタンスを設定
     }
 }
 
 // VerifyToken は認証トークンを検証し、クレームを返します
 func (r *AuthRepositoryImpl) VerifyToken(ctx context.Context, token string) (map[string]interface{}, error) {
-    // Firebase 認証インスタンスを使用してトークンを検証
-    return r.firebaseAuth.VerifyIDToken(ctx, token)
+    // 認証サービスインスタンスを使用してトークンを検証
+    return r.authService.VerifyToken(ctx, token)
 }

@@ -13,13 +13,7 @@ import (
     "google.golang.org/api/option"         // Google API オプションをインポート
 )
 
-// FirebaseAuth は Firebase 認証のインターフェースを定義します
-type FirebaseAuth interface {
-    // VerifyIDToken は Firebase ID トークンを検証し、デコードされたトークンを返します
-    VerifyIDToken(ctx context.Context, idToken string) (map[string]interface{}, error)
-}
-
-// FirebaseAuthImpl は FirebaseAuth インターフェースを実装します
+// FirebaseAuthImpl は AuthService インターフェースを実装します
 type FirebaseAuthImpl struct {
     app        *firebase.App // Firebase アプリのインスタンス
     authClient *auth.Client  // Firebase 認証クライアント
@@ -36,7 +30,7 @@ func (e *AuthError) Error() string {
 }
 
 // NewFirebaseAuth は新しい FirebaseAuthImpl を作成します
-func NewFirebaseAuth() (FirebaseAuth, error) {
+func NewFirebaseAuth() (AuthService, error) {
     ctx := context.Background()
     var app *firebase.App
     var err error
@@ -91,8 +85,9 @@ func NewFirebaseAuth() (FirebaseAuth, error) {
     }, nil
 }
 
-// VerifyIDToken は Firebase ID トークンを検証し、デコードされたトークンを返します
-func (f *FirebaseAuthImpl) VerifyIDToken(ctx context.Context, idToken string) (map[string]interface{}, error) {
+// VerifyToken は認証トークンを検証し、デコードされたトークンを返します
+// AuthService インターフェースの実装
+func (f *FirebaseAuthImpl) VerifyToken(ctx context.Context, idToken string) (map[string]interface{}, error) {
     // トークンを検証
     token, err := f.authClient.VerifyIDToken(ctx, idToken)
     if err != nil {

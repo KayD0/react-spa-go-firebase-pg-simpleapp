@@ -40,10 +40,10 @@ func main() {
         MaxAge:           12 * time.Hour,
     }))
 
-    // Initialize Firebase Auth
-    firebaseAuth, err := auth.NewFirebaseAuth()
+    // Initialize Auth Service
+    authService, err := auth.NewAuthService(auth.Firebase)
     if err != nil {
-        log.Printf("Warning: Failed to initialize Firebase Admin SDK: %v", err)
+        log.Printf("Warning: Failed to initialize Auth Service: %v", err)
     }
 
     // Initialize database
@@ -59,7 +59,7 @@ func main() {
     log.Println("Database connected and migrated successfully")
 
     // Initialize repositories
-    authRepo := repository.NewAuthRepository(firebaseAuth)
+    authRepo := repository.NewAuthRepository(authService)
     userRepo := repository.NewUserRepository(db.DB)
 
     // Initialize use cases
