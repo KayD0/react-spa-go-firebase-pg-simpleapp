@@ -1,9 +1,11 @@
-package auth
+package authentication
 
 import (
 	"context"
 	"errors"
 	"time"
+
+	"github.com/baseapp/domain/authentication"
 )
 
 // MockAuthImpl は AuthService インターフェースを実装するモックの認証サービスです
@@ -14,7 +16,7 @@ type MockAuthImpl struct {
 }
 
 // NewMockAuth は新しい MockAuthImpl を作成します
-func NewMockAuth() (AuthService, error) {
+func NewMockAuth() (authentication.AuthService, error) {
 	// テスト用のトークンとクレームを初期化
 	validTokens := make(map[string]map[string]interface{})
 	

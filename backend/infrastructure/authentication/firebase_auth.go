@@ -1,16 +1,17 @@
-package auth
+package authentication
 
 import (
-    "context"
-    "encoding/json"
-    "fmt"
-    "log"
-    "os"
-    "strings"
+	"context"
+	"encoding/json"
+	"fmt"
+	"log"
+	"os"
+	"strings"
 
-    firebase "firebase.google.com/go/v4" // Firebase SDK をインポート
-    "firebase.google.com/go/v4/auth"       // Firebase 認証をインポート
-    "google.golang.org/api/option"         // Google API オプションをインポート
+	firebase "firebase.google.com/go/v4" // Firebase SDK をインポート
+	"firebase.google.com/go/v4/auth"     // Firebase 認証をインポート
+	"github.com/baseapp/domain/authentication"
+	"google.golang.org/api/option" // Google API オプションをインポート
 )
 
 // FirebaseAuthImpl は AuthService インターフェースを実装します
@@ -30,7 +31,7 @@ func (e *AuthError) Error() string {
 }
 
 // NewFirebaseAuth は新しい FirebaseAuthImpl を作成します
-func NewFirebaseAuth() (AuthService, error) {
+func NewFirebaseAuth() (authentication.AuthService, error) {
     ctx := context.Background()
     var app *firebase.App
     var err error

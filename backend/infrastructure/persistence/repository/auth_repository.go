@@ -1,19 +1,20 @@
 package repository
 
 import (
-    "context" // コンテキストパッケージをインポート
+	"context" // コンテキストパッケージをインポート
 
-    "github.com/baseapp/domain/repository" // ドメインリポジトリをインポート
-    "github.com/baseapp/infrastructure/auth" // 認証インフラストラクチャをインポート
+	"github.com/baseapp/domain/authentication"
+	"github.com/baseapp/domain/repository" // ドメインリポジトリをインポート
+	// 認証インフラストラクチャをインポート
 )
 
 // AuthRepositoryImpl は AuthRepository インターフェースを実装します
 type AuthRepositoryImpl struct {
-    authService auth.AuthService // 認証サービスインスタンス
+    authService authentication.AuthService // 認証サービスインスタンス
 }
 
 // NewAuthRepository は新しい AuthRepositoryImpl を作成します
-func NewAuthRepository(authService auth.AuthService) repository.AuthRepository {
+func NewAuthRepository(authService authentication.AuthService) repository.AuthRepository {
     return &AuthRepositoryImpl{
         authService: authService, // 認証サービスインスタンスを設定
     }

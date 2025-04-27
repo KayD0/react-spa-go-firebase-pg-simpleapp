@@ -1,9 +1,11 @@
-package auth
+package authentication
 
 import (
 	"errors"
 	"os"
 	"strings"
+
+	"github.com/baseapp/domain/authentication"
 )
 
 // AuthType は認証サービスの種類を表す型です
@@ -21,7 +23,7 @@ const (
 )
 
 // NewAuthService は指定された認証タイプに基づいて新しい AuthService を作成します
-func NewAuthService(authType AuthType) (AuthService, error) {
+func NewAuthService(authType AuthType) (authentication.AuthService, error) {
 	// 環境変数から認証タイプを取得（設定されていない場合はパラメータを使用）
 	envAuthType := os.Getenv("AUTH_SERVICE_TYPE")
 	if envAuthType != "" {
