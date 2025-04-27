@@ -2,34 +2,31 @@
  * 認証APIサービス
  * 
  * このサービスはAPIリクエスト用の認証トークン管理を処理します。
- * Firebase認証と連携してIDトークンを取得し、APIリクエストに含めます。
+ * 認証サービスと連携してIDトークンを取得し、APIリクエストに含めます。
  */
 
-import { getAuth } from 'firebase/auth';
-import { getCurrentUser } from './firebase';
+import authService from './auth/auth-service';
 
 // 環境変数からAPIベースURLを取得
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
 /**
- * 現在のユーザーのIDトークンを取得
+ * 現在のユーザーの認証トークンを取得
  * 
- * @returns {Promise<string|null>} IDトークン、または認証されていない場合はnull
+ * @returns {Promise<string|null>} 認証トークン、または認証されていない場合はnull
  */
 export async function getIdToken() {
-  const currentUser = getCurrentUser();
-  
-  if (!currentUser) {
+  if (!authService.isAuthenticated()) {
     console.warn('現在サインインしているユーザーはいません');
     return null;
   }
   
   try {
     // 新しいトークンを取得（デフォルトではforce refresh = false）
-    const token = await currentUser.getIdToken();
+    const token = await authService.getAuthToken();
     return token;
   } catch (error) {
-    console.error('IDトークン取得エラー:', error);
+    console.error('認証トークン取得エラー:', error);
     return null;
   }
 }
